@@ -9,9 +9,11 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
 import com.ha.authentication.CalendarUserAuthenticationProvider;
 import com.ha.authentication.filter.DomainUsernamePasswordAuthenticationFilter;
@@ -74,16 +76,26 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.and().formLogin()
 			.and().httpBasic()
 			.and().logout()
+//			.and().rememberMe()
+//				.tokenRepository(rememberMeTokenRepository)
+//				.alwaysRemember(true)
+//				.tokenValiditySeconds(24*60*60)
+//				.key("haha")
 			.and().rememberMe()
-				.tokenRepository(rememberMeTokenRepository)
-				.alwaysRemember(true)
-				.tokenValiditySeconds(24*60*60)
-				.key("haha")
+				.rememberMeServices(rememberMeServices(rememberMeTokenRepository))
 			.and().csrf().disable();
 			
 			// Add custom DomainUsernamePasswordAuthenticationFilter
         	//.addFilterAt(domainUsernamePasswordAuthenticationFilter(),
             //  UsernamePasswordAuthenticationFilter.class)
+	}
+	
+	@Bean
+	public RememberMeServices rememberMeServices(PersistentTokenRepository repository) {
+		PersistentTokenBasedRememberMeServices myServices = new PersistentTokenBasedRememberMeServices("haha", detailsService, rememberMeTokenRepository);
+		myServices.setAlwaysRemember(true);
+		myServices.setTokenValiditySeconds(24 * 60 * 60);
+		return myServices;
 	}
 	
 	//@Bean
