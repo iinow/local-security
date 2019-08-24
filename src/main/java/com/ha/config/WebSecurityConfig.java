@@ -92,10 +92,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Bean
 	public RememberMeServices rememberMeServices(PersistentTokenRepository repository) {
-		PersistentTokenBasedRememberMeServices myServices = new PersistentTokenBasedRememberMeServices("haha", detailsService, rememberMeTokenRepository);
-		myServices.setAlwaysRemember(true);
-		myServices.setTokenValiditySeconds(24 * 60 * 60);
-		return myServices;
+		PersistentTokenBasedRememberMeServices rememberMeService = new PersistentTokenBasedRememberMeServices("haha", detailsService, rememberMeTokenRepository);
+		rememberMeService.setAlwaysRemember(true);
+		rememberMeService.setTokenValiditySeconds(24 * 60 * 60);
+		rememberMeService.setCookieName("cn");
+		return rememberMeService;
 	}
 	
 	//@Bean
